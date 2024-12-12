@@ -357,10 +357,10 @@ func resourceAliCloudDBInstance() *schema.Resource {
 				Computed:     true,
 			},
 			"sql_collector_config_value": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ValidateFunc: IntInSlice([]int{30, 180, 365, 1095, 1825}),
-				Default:      30,
+				Type:             schema.TypeInt,
+				Optional:         true,
+				ValidateFunc:     IntInSlice([]int{30, 180, 365, 1095, 1825}),
+				DiffSuppressFunc: SqlCollectorStatusDiffSuppressFunc,
 			},
 			"resource_group_id": {
 				Type:     schema.TypeString,
@@ -605,6 +605,11 @@ func resourceAliCloudDBInstance() *schema.Resource {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: StringInSlice([]string{"Up", "Down", "TempUpgrade", "Serverless"}, false),
+			},
+			"bursting_enabled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
 			},
 		},
 	}
@@ -1423,6 +1428,11 @@ func resourceAliCloudDBInstanceUpdate(d *schema.ResourceData, meta interface{}) 
 	}
 	request["DBInstanceStorage"] = d.Get("instance_storage")
 
+	if d.HasChange("bursting_enabled") {
+		update = true
+	}
+	request["BurstingEnabled"] = d.Get("bursting_enabled")
+
 	if d.HasChange("serverless_config") {
 		update = true
 		if v, ok := d.GetOk("serverless_config"); ok {
@@ -1708,6 +1718,7 @@ func resourceAliCloudDBInstanceRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("zone_id", instance["ZoneId"])
 	d.Set("status", instance["DBInstanceStatus"])
 	d.Set("create_time", instance["CreationTime"])
+	d.Set("bursting_enabled", instance["BurstingEnabled"])
 
 	// MySQL Serverless instance query PayType return SERVERLESS, need to be consistent with the participant.
 	payType := instance["PayType"]
