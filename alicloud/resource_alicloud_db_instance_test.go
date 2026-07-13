@@ -625,7 +625,7 @@ func TestAccAliCloudRdsDBInstance_VpcId(t *testing.T) {
 					"instance_charge_type":       "Postpaid",
 					"instance_name":              "${var.name}",
 					"db_instance_storage_type":   "local_ssd",
-					"target_minor_version":       "rds_20201031",
+					"target_minor_version":       "rds_20260228",
 					"zone_id":                    "${local.zone_id}",
 					"zone_id_slave_a":            "${local.zone_id}",
 					"vpc_id":                     "${data.alicloud_vpcs.default.ids.0}",
@@ -676,11 +676,11 @@ func TestAccAliCloudRdsDBInstance_VpcId(t *testing.T) {
 				Config: testAccConfig(map[string]interface{}{
 					"upgrade_time":         "Immediate",
 					"switch_time":          "2020-01-15T00:00:00Z",
-					"target_minor_version": "rds_20201031",
+					"target_minor_version": "rds_20260228",
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{
-						"target_minor_version": "rds_20201031",
+						"target_minor_version": "rds_20260228",
 					}),
 				),
 			},
@@ -3464,7 +3464,7 @@ func TestAccAliCloudRdsDBInstanceMysql_Downgrade(t *testing.T) {
 					"vswitch_id":               "${data.alicloud_vswitches.default.ids.0}",
 					"monitoring_period":        "60",
 					"db_instance_storage_type": "cloud_ssd",
-					"target_minor_version":     "rds_20201031",
+					"target_minor_version":     "rds_20260228",
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{
@@ -3478,7 +3478,7 @@ func TestAccAliCloudRdsDBInstanceMysql_Downgrade(t *testing.T) {
 						"db_instance_storage_type":   "cloud_ssd",
 						"resource_group_id":          CHECKSET,
 						"node_id":                    CHECKSET,
-						"target_minor_version":       "rds_20201031",
+						"target_minor_version":       "rds_20260228",
 					}),
 				),
 			},
