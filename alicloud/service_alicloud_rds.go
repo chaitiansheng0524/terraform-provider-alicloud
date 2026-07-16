@@ -948,6 +948,9 @@ func (s *RdsService) ModifyDBBackupPolicy(d *schema.ResourceData, updateForData,
 			"ReleasedKeepPolicy":    releasedKeepPolicy,
 			"Category":              category,
 		}
+		if d.HasChange("backup_interval") {
+			request["BackupInterval"] = backupInterval
+		}
 		if instance["Engine"] == "SQLServer" && instance["Category"] == "AlwaysOn" {
 			if v, ok := d.GetOk("backup_priority"); ok {
 				request["BackupPriority"] = v.(int)
